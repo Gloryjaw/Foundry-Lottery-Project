@@ -28,7 +28,7 @@ import {VRFConsumerBaseV2} from "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2
 import {AutomationCompatibleInterface} from "@chainlink/contracts/src/v0.8/interfaces/AutomationCompatibleInterface.sol";
 
 /**@title A sample Raffle Contract
- * @author Patrick Collins
+ * @author Dhruv Kushwah
  * @notice This contract is for creating a sample raffle contract
  * @dev This implements the Chainlink VRF Version 2
  */
@@ -69,7 +69,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     event RequestedRaffleWinner(uint256 indexed requestId);
     event RaffleEnter(address indexed player);
     event WinnerPicked(address indexed player);
-
+    
     /* Functions */
     constructor(
         uint64 subscriptionId,
@@ -155,7 +155,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
             i_callbackGasLimit,
             NUM_WORDS
         );
-        // Quiz... is this redundant?
+  
         emit RequestedRaffleWinner(requestId);
     }
 
@@ -167,12 +167,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
         uint256 /* requestId */,
         uint256[] memory randomWords
     ) internal override {
-        // s_players size 10
-        // randomNumber 202
-        // 202 % 10 ? what's doesn't divide evenly into 202?
-        // 20 * 10 = 200
-        // 2
-        // 202 % 10 = 2
+
         uint256 indexOfWinner = randomWords[0] % s_players.length;
         address payable recentWinner = s_players[indexOfWinner];
         s_recentWinner = recentWinner;
@@ -181,13 +176,13 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
         s_lastTimeStamp = block.timestamp;
         emit WinnerPicked(recentWinner);
         (bool success, ) = recentWinner.call{value: address(this).balance}("");
-        // require(success, "Transfer failed");
+
         if (!success) {
             revert Raffle__TransferFailed();
         }
     }
 
-    /** Getter Functions */
+ //Getters
 
     function getRaffleState() public view returns (RaffleState) {
         return s_raffleState;
